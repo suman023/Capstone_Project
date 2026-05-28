@@ -1,0 +1,30 @@
+---
+- name: Deploy AWS page
+  hosts: aws
+  become: true
+  tasks:
+    - name: Copy index-aws.html to nginx folder
+      copy:
+        src: index-aws.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+- name: Deploy Azure page
+  hosts: azure
+  become: true
+  tasks:
+    - name: Copy index-azure.html to nginx folder
+      copy:
+        src: index-azure.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted

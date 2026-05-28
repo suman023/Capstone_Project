@@ -1,0 +1,49 @@
+Task 5: Traffic Management Using AWS Route 53
+=============================================
+
+All steps were performed manually via AWS Console.
+
+Step 1: Create Hosted Zone
+- Go to Route 53 → Hosted Zones → Create Hosted Zone
+- Domain: upgrad.com
+- Type: Public Hosted Zone
+
+Step 2: Create Health Check
+- Go to Route 53 → Health Checks → Create Health Check
+- Name: aws-app-health-check
+- Protocol: HTTP
+- IP Address: <APP_MACHINE_PUBLIC_IP>
+- Port: 80
+
+Step 3: Create Primary DNS Record (AWS)
+- Go to Hosted Zone upgrad.com → Create Record
+- Record name: app
+- Record type: A
+- Value: <APP_MACHINE_PUBLIC_IP>
+- TTL: 60
+- Routing policy: Failover
+- Failover record type: Primary
+- Health check: aws-app-health-check
+- Record ID: primary
+
+Step 4: Create Secondary DNS Record (Azure)
+- Create Record again
+- Record name: app
+- Record type: A
+- Value: <AZURE_VM_PUBLIC_IP>
+- TTL: 60
+- Routing policy: Failover
+- Failover record type: Secondary
+- Record ID: secondary
+
+Step 5: Test Failover
+- Stop AWS App Machine from EC2 Console
+- Wait 1-2 minutes for Health Check to become Unhealthy
+- Traffic automatically redirects to Azure VM
+- Verify Azure page is accessible
+
+Step 6: Restore
+- Start AWS App Machine
+- Update IP in Route 53 Primary record and Health Check (if IP changed)
+- Wait for Health Check to become Healthy
+- Traffic returns to AWS automatically
